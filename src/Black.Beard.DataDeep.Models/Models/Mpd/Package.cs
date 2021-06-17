@@ -69,7 +69,7 @@ namespace Bb.DataDeep.Models.Mpd
                 ? Path.Combine(_outPath, this.Name) 
                 : this.Name;
 
-            string filename = this.Name + "." + this.Version.ToString() + ".json";
+            string filename = this.Name + "." + this.Version.ToString() + ".dd.json";
             var file = Path.Combine(dir, filename);
 
             return file;

@@ -43,11 +43,30 @@ namespace Salesforces
                         break;
 
                     case "defaultValue":
-                        result.AddMetadata(Constants.ComponentModel, Constants.DefaultValue, item.Value);
+
+                        object value = null;
+
+                        if (bool.TryParse(item.Value, out bool i1))
+                            value = i1;
+
+                        else if (Int64.TryParse(item.Value, out Int64 i2))
+                            value = i2;
+
+                        else if (double.TryParse(item.Value, out double i3))
+                            value = i3;
+
+                        else if (DateTime.TryParse(item.Value, out DateTime i4))
+                            value = i4;
+
+                        else
+                            value = item.Value;
+
+                        result.AddMetadata(Constants.ComponentModel, Constants.DefaultValue, value);
                         break;
 
                     case "required":
-                        result.AddMetadata(Constants.Contraint, Constants.Required, bool.Parse(item.Value));
+                        if (bool.Parse(item.Value))
+                            result.AddMetadata(Constants.Contraint, Constants.Required, true);
                         break;
 
                     case "externalId":
@@ -68,22 +87,31 @@ namespace Salesforces
                     #endregion MasterDetail          
 
                     case "unique":
-                        result.AddMetadata(Constants.ComponentModel, Constants.IsUnique, bool.Parse(item.Value));
+                        if (bool.Parse(item.Value))
+                            result.AddMetadata(Constants.ComponentModel, Constants.IsUnique, true);
                         break;
 
                     case "precision":
-                        result.AddMetadata(Constants.ComponentModel, Constants.Precision, int.Parse(item.Value));
+                        var i8 = int.Parse(item.Value);
+                        if (i8 > 0)
+                            result.AddMetadata(Constants.ComponentModel, Constants.Precision, i8);
                         break;
 
                     case "scale":
-                        result.AddMetadata(Constants.ComponentModel, Constants.Scale, int.Parse(item.Value));
+                        var i7 = int.Parse(item.Value);
+                        if (i7 > 0)
+                            result.AddMetadata(Constants.ComponentModel, Constants.Scale, i7);
                         break;
+
                     case "length":
-                        result.AddMetadata(Constants.ComponentModel, Constants.maxLength, int.Parse(item.Value));
+                        var i6 = int.Parse(item.Value);
+                        if (i6 > 0)
+                            result.AddMetadata(Constants.ComponentModel, Constants.maxLength, i6);
                         break;
 
                     case "caseSensitive":
-                        result.AddMetadata(Constants.ComponentModel, Constants.CaseSentitive, bool.Parse(item.Value));
+                        if (bool.Parse(item.Value))
+                            result.AddMetadata(Constants.ComponentModel, Constants.CaseSentitive, true);
                         break;
 
                     case "valueSet":
@@ -91,11 +119,13 @@ namespace Salesforces
                         break;
 
                     case "trackHistory":
-                        result.AddMetadata(Constants.ComponentModel, Constants.Tracked, bool.Parse(item.Value));
+                        if (bool.Parse(item.Value))
+                            result.AddMetadata(Constants.ComponentModel, Constants.Tracked, true);
                         break;
 
                     case "trackTrending":
-                        result.AddMetadata(Constants.ComponentModel, Constants.TrackTrending, bool.Parse(item.Value));
+                        if (bool.Parse(item.Value))
+                            result.AddMetadata(Constants.ComponentModel, Constants.TrackTrending, true);
                         break;
 
                     case "referenceTo":
@@ -140,7 +170,8 @@ namespace Salesforces
                 {
 
                     case "restricted":
-                        result.AddMetadata(Constants.Contraint, "restrictedList", bool.Parse(item2.Value));
+                        if (bool.Parse(item2.Value))
+                            result.AddMetadata(Constants.Contraint, "restrictedList", true);
                         break;
 
                     case "valueSetName":
@@ -158,36 +189,62 @@ namespace Salesforces
                         result.Type.Name = subType;
                         var package = result.GetParent().GetParent();
 
-                        Entity e = package.AddEntity(new Entity() 
+                        Entity e = package.AddEntity(new Entity()
                         {
                             Name = subType,
-                            Kind = EntityKindEnum.Enumeration 
+                            Kind = EntityKindEnum.Enumeration
                         });
 
                         foreach (var item3 in item2.Elements())
                         {
 
                             var f = e.AddAttribute(new AttributeField());
+                            f.Type.Name = Constants.Text;
 
                             switch (item3.Name.LocalName)
                             {
 
                                 case "value":
+
+                                    foreach (var item4 in item3.Elements())
+                                    {
+
+                                        bool i;
+
+                                        switch (item4.Name.LocalName)
+                                        {
+
+                                            case "fullName":
+                                                f.Name = item4.Value;
+                                                break;
+
+                                            case "label":
+                                                f.Label = item4.Value;
+                                                break;
+
+                                            case "isActive":
+                                                i = bool.Parse(item4.Value);
+                                                if (i)
+                                                    f.AddMetadata(Constants.ComponentModel, Constants.IsActive, true);
+                                                break;
+
+                                            case "default":
+                                                i = bool.Parse(item4.Value);
+                                                if (i)
+                                                    f.AddMetadata(Constants.ComponentModel, Constants.IsDefault, true);
+                                                break;
+
+
+                                            default:
+                                                LocalDebug.Stop();
+                                                break;
+                                        }
+
+                                    }
+
+                                    break;
+
                                 case "sorted":
-                                    break;
-
-                                case "fullName":
-                                    f.Name = item3.Value;
-                                    break;
-
-                                case "label":
-                                    f.Label = item3.Value;
-                                    break;
-
-                                case "default":
-                                    var i = bool.Parse(item3.Value);
-                                    if (i)
-                                        f.AddMetadata(Constants.ComponentModel, Constants.IsDefault, true);
                                     break;
 
                                 default:
@@ -206,7 +263,7 @@ namespace Salesforces
                 }
             }
         }
-         
+
 
         private void ResolveType(string value, AttributeField result)
         {
@@ -216,69 +273,69 @@ namespace Salesforces
 
                 case "MasterDetail":
                     result.Type.IsList = true;
-                    result.AddMetadata(Constants.Ihm, Constants.Type, "list");
+                    result.AddMetadata(Constants.Ihm, Constants.Type, Constants.List);
                     break;
 
                 case "MultiselectPicklist":
                     result.Type.IsList = true;
-                    result.AddMetadata(Constants.Ihm, Constants.Type, "list");
+                    result.AddMetadata(Constants.Ihm, Constants.Type, Constants.List);
                     break;
 
                 case "Picklist":
-                    result.AddMetadata(Constants.Ihm, Constants.Type, "list");
+                    result.AddMetadata(Constants.Ihm, Constants.Type, Constants.List);
                     break;
 
                 case "Checkbox":
-                    result.Type.Name = "boolean";
-                    result.AddMetadata("source-selection", Constants.Type, "list");
+                    result.Type.Name = Constants.Boolean;
+                    result.AddMetadata("source-selection", Constants.Type, Constants.List);
                     break;
 
                 case "Text":
-                    result.Type.Name = "text";
+                    result.Type.Name = Constants.Text;
                     break;
 
                 case "Email":
-                    result.Type.Name = "text";
-                    result.AddMetadata(Constants.Contraint, Constants.Type, "email");
+                    result.Type.Name = Constants.Text;
+                    result.AddMetadata(Constants.Contraint, Constants.Type, Constants.Email);
                     break;
 
                 case "Number":
-                    result.Type.Name = "number";
+                    result.Type.Name = Constants.Number;
                     break;
 
                 case "Percent":
-                    result.Type.Name = "number";
-                    result.AddMetadata(Constants.Ihm, Constants.Type, "percent");
+                    result.Type.Name = Constants.Number;
+                    result.AddMetadata(Constants.Ihm, Constants.Type, Constants.Percent);
                     break;
 
                 case "Location":
-                    result.Type.Name = "geopraphy";
+                    result.Type.Name = Constants.Geopraphy;
                     break;
 
                 case "Time":
-                    result.Type.Name = "time";
+                    result.Type.Name = Constants.Time;
                     break;
 
                 case "Date":
-                    result.Type.Name = "date";
+                    result.Type.Name = Constants.Date;
                     break;
 
                 case "DateTime":
-                    result.Type.Name = "datetime";
+                    result.Type.Name = Constants.DateTime;
                     break;
 
                 case "LongTextArea":
-                    result.Type.Name = "text";
-                    result.AddMetadata(Constants.Ihm, Constants.Type, "LongTextArea");
+                    result.Type.Name = Constants.Text;
+                    result.AddMetadata(Constants.Ihm, Constants.Type, Constants.LongTextArea);
                     break;
 
                 case "TextArea":
-                    result.Type.Name = "text";
-                    result.AddMetadata(Constants.Ihm, Constants.Type, "textarea");
+                    result.Type.Name = Constants.Text;
+                    result.AddMetadata(Constants.Ihm, Constants.Type, Constants.Textarea);
                     break;
 
                 case "Lookup":
-                    result.AddMetadata(Constants.Ihm, Constants.Type, "reference");
+                    result.AddMetadata(Constants.Ihm, Constants.Type, Constants.Reference);
                     break;
 
                 case "Html":

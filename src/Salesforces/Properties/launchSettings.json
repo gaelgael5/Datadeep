@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Salesforces": {
+      "commandName": "Project",
+      "commandLineArgs": "generate \"C:\\Users\\g.beard\\Desktop\\Test_salesforce\\CRMV2\" \"crmv2\" \"C:\\Users\\g.beard\\Desktop\\datadeep\" --name \"CRM2 (saas)\" --label \"saas CRM v2\" --description \"pudo referential\" --version \"1.0.0\" --summary"
+    }
+  }
+}

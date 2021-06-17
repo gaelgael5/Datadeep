@@ -26,6 +26,24 @@
         public static string IsCustom = "is_custom";
         public static string Validation = "validation";
 
+
+        public static string Text = "text";
+        public static string Boolean = "boolean";
+        public static string Number = "number";
+        public static string Geopraphy = "geopraphy";
+        public static string Time = "time";
+        public static string Date = "date";
+        public static string DateTime = "datetime";
+
+
+        public static string List = "list";
+        public static string Email = "email";
+        public static string Percent = "percent";
+        public static string LongTextArea = "longtextarea";
+        public static string Textarea = "textarea";
+        public static string Reference = "reference";
+
+
     }
 
 }

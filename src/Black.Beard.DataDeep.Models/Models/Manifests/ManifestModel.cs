@@ -48,7 +48,7 @@ namespace Bb.DataDeep.Models.Manifests
            
             var manifest = new ManifestModel();
             List<ManifestModelItem> _list = new List<ManifestModelItem>();
-            foreach (var item in dir.GetFiles("*.json", SearchOption.AllDirectories))
+            foreach (var item in dir.GetFiles("*.dd.json", SearchOption.AllDirectories))
             {
                 var package = Mpd.Package.Load(item.FullName);
                 var m = package.GetManifest();

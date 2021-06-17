@@ -14,21 +14,40 @@ namespace Salesforces
     public class SalesforceMpdBuilder : DirectoryMpdBuilder<XElement>
     {
 
-
         public SalesforceMpdBuilder()
         {
             Add("CustomField", new CustomFieldReader(this));
             Add("ValidationRule", new ValidationRuleReader(this));
         }
 
-        internal void Parse(string path, Library lib)
+        internal IEnumerable<Library> Parse(string path)
         {
 
-            DirectoryInfo dir = new DirectoryInfo(path);
-
-            foreach (DirectoryInfo @object in dir.GetDirectories())
+            var file = new FileInfo(Path.Combine(path, "sfdx-project.json"));
+            if (file.Exists)
             {
-                Entity entity = ParseObject(@object, lib);
+
+                JObject sfdx = (JObject)file.FullName.LoadContentFromFile().ConvertToJson();
+                var _path= sfdx["packageDirectories"] as JArray;
+
+                foreach (var item in _path)
+                {
+
+                    var sub = item["path"].Value<string>();
+                    string __path = Path.Combine(path, sub, @"main\default\objects");
+
+                    Library lib = new Library()
+                    {
+                        Name = sub,
+                    };
+
+                    DirectoryInfo dir = new DirectoryInfo(__path);
+                    foreach (DirectoryInfo @object in dir.GetDirectories())
+                        ParseObject(@object, lib);
+                    yield return lib;
+
+                }
+
             }
 
         }
