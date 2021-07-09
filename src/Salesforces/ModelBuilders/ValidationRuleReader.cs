@@ -17,18 +17,18 @@ namespace Salesforces
             this.salesforceMpdBuilder = salesforceMpdBuilder;
         }
 
-        public override StructureBase Resolve(XElement element, StructureBase parent)
+        public override StructureMpdBase Resolve(XElement element, StructureMpdBase parent)
         {
 
             var entity = parent as Entity;
 
             var e = element.Element(XName.Get("errorDisplayField", @"http://soap.sforce.com/2006/04/metadata"));
 
-            StructureBase current = parent;
+            StructureMpdBase current = parent;
             if (e != null)
-                current = (StructureBase)entity.Attributes.FirstOrDefault(c => c.Name == e.Value) ?? entity;
+                current = (StructureMpdBase)entity.Attributes.FirstOrDefault(c => c.Name == e.Value) ?? entity;
             
-            var result = current.AddMetadata(Constants.Contraint, Constants.Validation, string.Empty);
+            var result = current.AddMetadata(DataDeepConstants.Contraint, DataDeepConstants.Validation, string.Empty);
 
             var items = element.Elements();
             foreach (var item in items)
@@ -42,7 +42,7 @@ namespace Salesforces
                         break;
 
                     case "active":
-                        result.AddInfos(Constants.IsActive, item.Value);
+                        result.AddInfos(DataDeepConstants.IsActive, item.Value);
                         break;
 
                     case "errorMessage":

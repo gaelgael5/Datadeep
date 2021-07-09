@@ -3,12 +3,11 @@ using Bb.CommandLines;
 using Bb.CommandLines.Validators;
 using Bb.DataDeep.Models.Mpd;
 using Microsoft.Extensions.CommandLineUtils;
-using Salesforces;
 using System;
 using System.IO;
 using System.Linq;
 
-namespace Salesforce.Commands
+namespace DotnetParser.Commands
 {
 
     /*
@@ -30,12 +29,12 @@ namespace Salesforce.Commands
             var cmd = app.Command("generate", config =>
             {
 
-                config.Description = "generate a model from salesforce description folder";
+                config.Description = "generate a model from csharp code folder";
                 config.HelpOption(HelpFlag);
 
                 var validator = new GroupArgument(config);
 
-                var pathSource = validator.Argument("<source folder path>", "source folder path where the salesforce structure is stored"
+                var pathSource = validator.Argument("<source folder path>", "source folder path where the csharp structure is stored"
                     , ValidatorExtension.EvaluateRequired
                     , ValidatorExtension.EvaluateDirectoryPathIsValid
                     );
@@ -89,8 +88,8 @@ namespace Salesforce.Commands
                     package.Id = Crc32.Calculate(package.Name + package.Version).ToString();
 
 
-                    SalesforceMpdBuilder builder = new SalesforceMpdBuilder();
-                    var libs = builder.Parse(sourceDir.FullName).ToArray();
+                    DotnetMpdBuilder builder = new DotnetMpdBuilder();
+                    var libs = builder.Parse(sourceDir.FullName, "*.cs").ToArray();
                     foreach (var lib in libs)
                         package.AddLib(lib);
 

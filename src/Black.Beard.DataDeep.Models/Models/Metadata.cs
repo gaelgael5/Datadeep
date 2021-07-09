@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Bb.DataDeep.Models.Mpd
+namespace Bb.DataDeep.Models
 {
     public class Metadata
     {
@@ -25,16 +25,6 @@ namespace Bb.DataDeep.Models.Mpd
             var m = new MetadataExtension() { Name = name, Value = new JValue(value) };
             Infos.Add(m);
         }
-
-    }
-
-
-    public class MetadataExtension
-    {
-
-        public string Name { get; set; }
-
-        public JValue Value { get; set; }
 
     }
 

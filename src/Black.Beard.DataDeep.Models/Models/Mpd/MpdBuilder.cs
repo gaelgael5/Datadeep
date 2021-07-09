@@ -18,10 +18,11 @@ namespace Bb.DataDeep.Models.Mpd
             _resolvers.Add(key, reader);
         }
 
-        public void Resolve(string key, T item, StructureBase parent) 
+        public void Resolve(string key, T item, StructureMpdBase parent) 
         {
             if (_resolvers.TryGetValue(key, out Reader<T> reader))
                 reader.Resolve(item, parent);
+
             else
             {
                 LocalDebug.Stop();

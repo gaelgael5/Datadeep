@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json.Converters;
 
 namespace Siteweb
 {
@@ -30,7 +31,12 @@ namespace Siteweb
                 configuration.RootPath = "ClientApp/build";
             });
 
-            services.AddMvc();
+            services.AddMvc()
+                //.AddJsonOptions(opts =>
+                //{
+                //    opts.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+                //})
+                ;
                       
             services.AddSwaggerGen(c =>
             {
@@ -39,6 +45,10 @@ namespace Siteweb
 
             services.AddMvcCore()
                 .AddApiExplorer();
+
+            //services
+            //    .AddControllers()
+            //    .AddNewtonsoftJson(opts => opts.Converters.Add(new StringEnumConverter()));
 
             services.AddSwaggerGenNewtonsoftSupport();
 

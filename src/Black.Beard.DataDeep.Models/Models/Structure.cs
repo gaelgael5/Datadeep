@@ -2,15 +2,16 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
-namespace Bb.DataDeep.Models.Mpd
+namespace Bb.DataDeep.Models
 {
 
     [DebuggerDisplay("{Name}")]
-    public class StructureBase
+    public class Structure
     {
 
-        public StructureBase()
+        public Structure()
         {
             this.Metadatas = new List<Metadata>();
             this.Description = string.Empty;
@@ -20,20 +21,22 @@ namespace Bb.DataDeep.Models.Mpd
 
         public string Description { get; set; }
 
-        public string Label { get; set; }
-
-        public Version Version { get; set; }
-
 
         public Metadata AddMetadata(string category, string name, object value)
         {
-            var m = new Metadata() { Category = category, Name = name, Value = new JValue(value) };
-            Metadatas.Add(m);
-            return m;
+            var item = Metadatas.FirstOrDefault(c => c.Category == category && Name == name && c.Value.Value == value);
+            if (item == null)
+            {
+                var m = new Metadata() { Category = category, Name = name, Value = new JValue(value) };
+                Metadatas.Add(m);
+               return m;
+            }
+            return item;
         }
 
         public List<Metadata> Metadatas { get; set; }
 
+       
     }
 
 

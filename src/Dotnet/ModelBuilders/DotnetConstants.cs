@@ -1,6 +1,6 @@
-﻿namespace Salesforces
+﻿namespace DotnetParser
 {
-    public static class Constants
+    public static class dotnetConstants
     {
 
         public static string Ihm = "ihm";
@@ -34,6 +34,8 @@
         public static string Time = "time";
         public static string Date = "date";
         public static string DateTime = "datetime";
+
+        public static string Nullable = "nullable";
 
 
         public static string List = "list";

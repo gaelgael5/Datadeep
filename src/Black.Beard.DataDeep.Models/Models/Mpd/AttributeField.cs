@@ -3,7 +3,7 @@
 namespace Bb.DataDeep.Models.Mpd
 {
 
-    public class AttributeField : StructureBase
+    public class AttributeField : StructureMpdBase
     {
 
         public AttributeField()

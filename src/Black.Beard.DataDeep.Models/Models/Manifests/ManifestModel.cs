@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Text.Json.Serialization;
 
 namespace Bb.DataDeep.Models.Manifests
 {
@@ -17,6 +16,9 @@ namespace Bb.DataDeep.Models.Manifests
             Items = new List<ManifestModelItem>();
         }
 
+        [JsonIgnore]
+        public string Path { get; set; }
+
         public DateTime LastUpdateDate { get; set; }
 
         public List<ManifestModelItem> Items { get; set; }
@@ -24,7 +26,7 @@ namespace Bb.DataDeep.Models.Manifests
         public void Save(string _outPath)
         {
 
-            var file = new FileInfo(Path.Combine(_outPath, "summary.json"));
+            var file = new FileInfo(System.IO.Path.Combine(_outPath, "summary.json"));
 
             if (!file.Directory.Exists)
                 file.Directory.Create();
@@ -44,17 +46,43 @@ namespace Bb.DataDeep.Models.Manifests
         public static ManifestModel Create(string path)
         {
 
-            var dir = new DirectoryInfo(path);
-           
-            var manifest = new ManifestModel();
             List<ManifestModelItem> _list = new List<ManifestModelItem>();
-            foreach (var item in dir.GetFiles("*.dd.json", SearchOption.AllDirectories))
+            var dirDataDeep = new DirectoryInfo(path);
+            var manifest = new ManifestModel();
+
+            foreach (var item in dirDataDeep.GetDirectories())
             {
-                var package = Mpd.Package.Load(item.FullName);
-                var m = package.GetManifest();
-                _list.Add(m);
-                if (manifest.LastUpdateDate < m.LastUpdateDate)
-                    manifest.LastUpdateDate = m.LastUpdateDate;
+
+                switch (item.Name)
+                {
+
+                    case DataDeepConstants.MpdFolder:
+                        foreach (var MpdDir in item.GetFiles("*.dd.json", SearchOption.AllDirectories))
+                        {
+                            var package = Mpd.Package.Load(MpdDir.FullName);
+                            var m = package.GetManifest();
+                            _list.Add(m);
+                            if (manifest.LastUpdateDate < m.LastUpdateDate)
+                                manifest.LastUpdateDate = m.LastUpdateDate;
+                        }
+                        break;
+
+                    case DataDeepConstants.DataReferentialFolder:
+                        foreach (var MpdDir in item.GetFiles("*.dd.json", SearchOption.AllDirectories))
+                        {
+                            var data = Mcd.DataReferences.DataEntity.Load(MpdDir.FullName);
+                            var m = data.GetManifest();
+                            _list.Add(m);
+                            if (manifest.LastUpdateDate < m.LastUpdateDate)
+                                manifest.LastUpdateDate = m.LastUpdateDate;
+                        }
+                        break;
+
+                    default:
+                        break;
+
+                }
+
             }
 
             manifest.Items.AddRange(_list.OrderBy(c => c.Name).OrderByDescending(c => c.Version));
@@ -67,10 +95,11 @@ namespace Bb.DataDeep.Models.Manifests
         public static ManifestModel Load(string path)
         {
 
-            string file = Path.Combine(path, "summary.json");
+            string file = System.IO.Path.Combine(path, "summary.json");
             if (File.Exists(file))
             {
                 var model = file.LoadContentFromFile().Deserialize<ManifestModel>();
+                model.Path = path;
                 return model;
             }
 

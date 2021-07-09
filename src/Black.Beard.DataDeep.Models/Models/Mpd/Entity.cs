@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace Bb.DataDeep.Models.Mpd
 {
 
-    public class Entity : StructureBase
+    public class Entity : StructureMpdBase
     {
 
         public Entity()
@@ -40,6 +40,7 @@ namespace Bb.DataDeep.Models.Mpd
     public enum EntityKindEnum
     {
         Object,
+        Contract,
         Table,
         Enumeration,
     }

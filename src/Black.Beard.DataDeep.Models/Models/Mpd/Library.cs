@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace Bb.DataDeep.Models.Mpd
 {
 
-    public class Library : StructureBase
+    public class Library : StructureMpdBase
     {
 
         public Library()

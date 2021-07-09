@@ -1,4 +1,5 @@
 ﻿using Bb.DataDeep.Models.Manifests;
+using Bb.DataDeep.Models.Mpd;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -28,13 +29,17 @@ namespace Siteweb.Controllers
 
         }
 
-        [HttpGet]
-        public ManifestModel Get1()
-        {
+        //[HttpGet]
+        //public Package Get1(string id)
+        //{
 
-            return Program.Instance.Manifest;
+        //    var manifest = Program.Instance.Manifest;
 
-        }
+        //    var result = manifest.Items.FirstOrDefault(c => c.Id == id);
+
+        //    return result.Path;
+
+        //}
 
     }
 }

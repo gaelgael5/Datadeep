@@ -13,12 +13,14 @@ namespace Siteweb
     public class Program
     {
 
+        /// <summary>
+        /// Inject the path of the folder where datas are stored.
+        /// </summary>
+        /// <param name="args"></param>
         public Program(string[] args)
         {
 
-            //var dir = Environment.CurrentDirectory;
-
-            this.Directory = @"C:\Users\g.beard\Desktop\datadeep";
+            this.Directory = args[0];
             this.Manifest = ManifestModel.Load(this.Directory);
 
             Program.Instance = this;
@@ -40,7 +42,9 @@ namespace Siteweb
                 });
 
         public static Program Instance { get; private set; }
+
         public string Directory { get; }
+
         public ManifestModel Manifest { get; }
     }
 }

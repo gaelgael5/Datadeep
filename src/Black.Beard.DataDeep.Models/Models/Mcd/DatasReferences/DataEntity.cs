@@ -3,30 +3,28 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace Bb.DataDeep.Models.Mpd
+namespace Bb.DataDeep.Models.Mcd.DataReferences
 {
 
-    public class Package : StructureMpdBase
+    public class DataEntity : Structure
     {
 
-        public Package()
+        public DataEntity()
         {
-            Libraries = new List<Library>();
+            Referential = new List<DataReferenceField>();
         }
 
-        public List<Library> Libraries { get; set; }
+        public List<DataReferenceField> Referential { get; set; }
 
         public DateTime LastUpdateDate { get; set; }
-
+        
         public string Id { get; set; }
 
-        public string Application { get; set; }
 
-        public Library AddLib(Library library)
+        public DataReferenceField AddAttribute(DataReferenceField attribute)
         {
-            Libraries.Add(library);
-            library.SetParent(this);
-            return library;
+            Referential.Add(attribute);
+            return attribute;
         }
 
         public Manifests.ManifestModelItem GetManifest()
@@ -34,21 +32,33 @@ namespace Bb.DataDeep.Models.Mpd
 
             return new Manifests.ManifestModelItem()
             {
-                Kind = Manifests.DocumentKindEnum.Mpd,
+                Kind = Manifests.DocumentKindEnum.DataReferential,
                 Name = this.Name,
                 LastUpdateDate = this.LastUpdateDate,
-                Version = this.Version.ToString(),
+                Version = "1.0.0",
                 Path = Getfilename(string.Empty),
-                Application = this.Application,
                 Id = this.Id,
             };
+
+        }
+
+        private string Getfilename(string _outPath)
+        {
+            var dir = !string.IsNullOrEmpty(_outPath)
+                ? Path.Combine(_outPath, this.Name)
+                : this.Name;
+
+            string filename = this.Name + "." + ".dd.json";
+            var file = Path.Combine(dir, filename);
+
+            return file;
 
         }
 
         public void Save(string targetPath)
         {
 
-            var _outPath = Path.Combine(targetPath, DataDeepConstants.MpdFolder);
+            var _outPath = Path.Combine(targetPath, DataDeepConstants.DataReferentialFolder);
 
             var file = new FileInfo(Getfilename(_outPath));
 
@@ -66,24 +76,11 @@ namespace Bb.DataDeep.Models.Mpd
 
         }
 
-        private string Getfilename(string _outPath)
-        {
-            var dir = !string.IsNullOrEmpty(_outPath) 
-                ? Path.Combine(_outPath, this.Name) 
-                : this.Name;
-
-            string filename = this.Name + "." + this.Version.ToString() + ".dd.json";
-            var file = Path.Combine(dir, filename);
-
-            return file;
-
-        }
-
-        public static Package Load(string file)
+        public static DataEntity Load(string file)
         {
             if (File.Exists(file))
             {
-                var model = file.LoadContentFromFile().Deserialize<Package>();
+                var model = file.LoadContentFromFile().Deserialize<DataEntity>();
                 return model;
             }
 
@@ -91,9 +88,6 @@ namespace Bb.DataDeep.Models.Mpd
 
         }
 
-
-
     }
-
 
 }

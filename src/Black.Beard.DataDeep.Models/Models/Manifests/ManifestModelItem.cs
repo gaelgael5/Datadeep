@@ -19,6 +19,16 @@ namespace Bb.DataDeep.Models.Manifests
 
         public string Path { get; set; }
 
+        public DocumentKindEnum Kind { get; set; }
+
+
+
+    }
+
+    public enum DocumentKindEnum
+    {
+        Mpd,
+        DataReferential,
     }
 
 }

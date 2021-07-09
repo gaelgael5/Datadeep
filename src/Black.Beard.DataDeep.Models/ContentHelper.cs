@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 
@@ -10,6 +11,16 @@ namespace Bb
 
     public static class ContentHelper
     {
+
+        /// <summary>
+        /// if your encoding code is missing 
+        /// Add (System.Text.Encoding & System.Text.Encoding.CodePages) nuget package
+        /// </summary>
+        static ContentHelper()
+        {
+            System.Text.EncodingProvider ppp = System.Text.CodePagesEncodingProvider.Instance;
+            Encoding.RegisterProvider(ppp);
+        }
 
         /// <summary>
         /// Loads the content of the file.
@@ -46,7 +57,15 @@ namespace Bb
                 cdet.Feed(fs);
                 cdet.DataEnd();
                 if (cdet.Charset != null)
-                    encoding = System.Text.Encoding.GetEncoding(cdet.Charset);
+                    try
+                    {
+                        encoding = System.Text.Encoding.GetEncoding(cdet.Charset);
+                    }
+                    catch (Exception ex)
+                    {
+                        Trace.WriteLine("(ContentHelper.LoadContentFromFile). Failed to convert byte in encoded text " + cdet.Charset + ". " + ex.Message);
+                        throw;
+                    }
                 else
                     encoding = System.Text.Encoding.UTF8;
 

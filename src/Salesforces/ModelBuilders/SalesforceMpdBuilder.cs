@@ -61,7 +61,7 @@ namespace Salesforces
             });
 
             if (entity.Name.EndsWith("__c"))
-                entity.AddMetadata(Constants.ComponentModel, Constants.IsCustom, true);
+                entity.AddMetadata(DataDeepConstants.ComponentModel, DataDeepConstants.IsCustom, true);
 
             foreach (var item in @object.GetDirectories())
             {
