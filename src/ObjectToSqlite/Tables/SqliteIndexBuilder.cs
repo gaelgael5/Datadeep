@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 
 namespace ObjectToSqlite
@@ -35,6 +37,17 @@ namespace ObjectToSqlite
         }
 
         public List<SqlLiteColumnIndexBuilder> Columns { get; }
+
+        public SqliteIndexBuilder Column<T>(params Action<SqliteColumnPropertyBuilder<T>>[] rules)
+        {
+            var builder = new SqliteColumnPropertyBuilder<T>(this);
+
+            if (rules != null)
+                foreach (var rule in rules)
+                    rule(builder);
+
+            return this;
+        }
 
         public SqliteIndexBuilder Column(string name, params Action<SqlLiteColumnIndexBuilder>[] rules)
         {
@@ -97,6 +110,59 @@ namespace ObjectToSqlite
         }
 
         private bool _ifNotExist;
+
+        public class SqliteColumnPropertyBuilder<T>
+        {
+
+            public SqliteColumnPropertyBuilder(SqliteIndexBuilder sqliteTableBuilder)
+            {
+                this.sqliteTableBuilder = sqliteTableBuilder;
+            }
+
+            public SqliteColumnPropertyBuilder<T> Column(Expression<Func<T, object>> e, params Action<SqlLiteColumnIndexBuilder>[] rules)
+            {
+
+                var member = MemberResolverVisitor.Resolve(e);
+
+                SqliteColumnType type = SqliteColumnType.Undefined;
+                if (member is PropertyInfo prop)
+                    type = prop.PropertyType.ToSqliteType();
+
+                else
+                {
+
+                }
+
+                this.sqliteTableBuilder.Column(member.Name, rules);
+
+                return this;
+
+            }
+
+            private class MemberResolverVisitor : ExpressionVisitor
+            {
+
+                public static MemberInfo Resolve(Expression e)
+                {
+
+                    var visitor = new MemberResolverVisitor();
+                    visitor.Visit(e);
+                    return visitor._member;
+                }
+
+                protected override Expression VisitMember(MemberExpression node)
+                {
+                    this._member = node.Member;
+                    return base.VisitMember(node);
+                }
+
+                private MemberInfo _member;
+
+            }
+
+            private SqliteIndexBuilder sqliteTableBuilder;
+
+        }
 
     }
 

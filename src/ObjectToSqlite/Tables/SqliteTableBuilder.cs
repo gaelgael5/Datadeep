@@ -38,7 +38,7 @@ namespace ObjectToSqlite
 
         public List<SqlLiteColumnBuilder> Columns { get; }
 
-        public SqliteTableBuilder ColumnFrom<T>(params Action<SqliteColumnPropertyBuilder<T>>[] rules)
+        public SqliteTableBuilder Column<T>(params Action<SqliteColumnPropertyBuilder<T>>[] rules)
         {
             var builder = new SqliteColumnPropertyBuilder<T>(this);
 
@@ -117,59 +117,60 @@ namespace ObjectToSqlite
         private bool _ifNotExist;
         private bool _withoutRowId;
 
+        public class SqliteColumnPropertyBuilder<T>
+        {
+
+            public SqliteColumnPropertyBuilder(SqliteTableBuilder sqliteTableBuilder)
+            {
+                this.sqliteTableBuilder = sqliteTableBuilder;
+            }
+
+            public SqliteColumnPropertyBuilder<T> Column(Expression<Func<T, object>> e, params Action<SqlLiteColumnBuilder>[] rules)
+            {
+
+                var member = MemberResolverVisitor.Resolve(e);
+
+                SqliteColumnType type = SqliteColumnType.Undefined;
+                if (member is PropertyInfo prop)
+                    type = prop.PropertyType.ToSqliteType();
+
+                else
+                {
+
+                }
+
+                this.sqliteTableBuilder.Column(member.Name, type, rules);
+
+                return this;
+
+            }
+
+            private class MemberResolverVisitor : ExpressionVisitor
+            {
+
+                public static MemberInfo Resolve(Expression e)
+                {
+
+                    var visitor = new MemberResolverVisitor();
+                    visitor.Visit(e);
+                    return visitor._member;
+                }
+
+                protected override Expression VisitMember(MemberExpression node)
+                {
+                    this._member = node.Member;
+                    return base.VisitMember(node);
+                }
+
+                private MemberInfo _member;
+
+            }
+
+            private SqliteTableBuilder sqliteTableBuilder;
+
+        }
+
     }
 
-    public class SqliteColumnPropertyBuilder<T>
-    {
-
-        public SqliteColumnPropertyBuilder(SqliteTableBuilder sqliteTableBuilder)
-        {
-            this.sqliteTableBuilder = sqliteTableBuilder;
-        }
-
-        public SqliteColumnPropertyBuilder<T> Column(Expression<Func<T, object>> e, params Action<SqlLiteColumnBuilder>[] rules)
-        {
-
-            var member = MemberResolverVisitor.Resolve(e);
-
-            SqliteColumnType type = SqliteColumnType.Undefined;
-            if (member is PropertyInfo prop)
-                type = prop.PropertyType.ToSqliteType();
-
-            else
-            {
-
-            }
-
-            this.sqliteTableBuilder.Column(member.Name, type, rules);
-
-            return this;
-
-        }
-
-        private class MemberResolverVisitor : ExpressionVisitor
-        {
-
-            public static MemberInfo Resolve(Expression e)
-            {
-
-                var visitor = new MemberResolverVisitor();
-                visitor.Visit(e);
-                return visitor._member;
-            }
-
-            protected override Expression VisitMember(MemberExpression node)
-            {
-                this._member = node.Member;
-                return base.VisitMember(node);
-            }
-
-            private MemberInfo _member;
-
-        }
-
-        private SqliteTableBuilder sqliteTableBuilder;
-
-    }
 
 }
