@@ -58,7 +58,7 @@ namespace Bb.DataDeep.Models.Mpd
             if (File.Exists(file.FullName))
                 File.Delete(file.FullName);
 
-            var result = JsonConvert.SerializeObject(this, Formatting.Indented);
+            var result = JsonConvert.SerializeObject(this, Formatting.Indented, new Newtonsoft.Json.Converters.StringEnumConverter());
 
             file.FullName.Save(result);
 

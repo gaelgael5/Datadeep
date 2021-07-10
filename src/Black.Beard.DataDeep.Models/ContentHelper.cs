@@ -253,7 +253,11 @@ namespace Bb
 
         public static TargetType Deserialize<TargetType>(this string self)
         {
-            TargetType instance = JsonConvert.DeserializeObject<TargetType>(self);
+
+            var settings = new JsonSerializerSettings() { };
+            settings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
+
+            TargetType instance = JsonConvert.DeserializeObject<TargetType>(self, settings);
             return instance;
         }
 

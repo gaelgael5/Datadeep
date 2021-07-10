@@ -13,6 +13,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Builders", "Builders", "{06
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotnetParser", "Dotnet\DotnetParser.csproj", "{FC0795CC-C193-4209-A40B-AE8E4725164C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObjectToSqlite", "ObjectToSqlite\ObjectToSqlite.csproj", "{536817C8-12D9-4F38-834A-5736D56935BB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObjectToSqliteUnitTest", "ObjectToSqliteUnitTest\ObjectToSqliteUnitTest.csproj", "{EF28EB3D-22A1-4B3C-A45A-CB857C6818EA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +39,14 @@ Global
 		{FC0795CC-C193-4209-A40B-AE8E4725164C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FC0795CC-C193-4209-A40B-AE8E4725164C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FC0795CC-C193-4209-A40B-AE8E4725164C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{536817C8-12D9-4F38-834A-5736D56935BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{536817C8-12D9-4F38-834A-5736D56935BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{536817C8-12D9-4F38-834A-5736D56935BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{536817C8-12D9-4F38-834A-5736D56935BB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF28EB3D-22A1-4B3C-A45A-CB857C6818EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF28EB3D-22A1-4B3C-A45A-CB857C6818EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF28EB3D-22A1-4B3C-A45A-CB857C6818EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF28EB3D-22A1-4B3C-A45A-CB857C6818EA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
