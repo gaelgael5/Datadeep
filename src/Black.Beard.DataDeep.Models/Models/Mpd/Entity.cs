@@ -12,11 +12,13 @@ namespace Bb.DataDeep.Models.Mpd
             Attributes = new List<AttributeField>();
         }
 
-        public List<AttributeField> Attributes { get; set; }
 
         public EntityKindEnum Kind { get; set; }
 
         public string FamilyName { get; set; }
+
+
+        public List<AttributeField> Attributes { get; set; }
 
         public AttributeField AddAttribute(AttributeField attribute)
         {
@@ -33,7 +35,6 @@ namespace Bb.DataDeep.Models.Mpd
         public Library GetParent() => this._parent;
 
         private Library _parent;
-
 
     }
 

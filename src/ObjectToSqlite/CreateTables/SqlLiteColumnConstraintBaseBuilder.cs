@@ -1,4 +1,4 @@
-﻿namespace ObjectToSqlite
+﻿namespace Bb.ToSqlite.CreateTables
 {
     public abstract class SqlLiteColumnConstraintBaseBuilder : Builder
     {

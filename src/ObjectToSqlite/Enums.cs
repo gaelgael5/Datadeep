@@ -1,9 +1,10 @@
-﻿namespace ObjectToSqlite
+﻿
+namespace Bb.ToSqlite
 {
 
     public enum ConflictClauseEnum
     {
-        Roolback,
+        Rollback,
         Abort,
         Fail,
         Ignore,
@@ -18,11 +19,11 @@
 
     public enum SqliteColumnType
     {
-        Undefined,
-        INTEGER,
-        BLOB,
-        TEXT,
-        real,
+        Undefined = 0,
+        INTEGER = 1,
+        real = 2,
+        TEXT = 3,
+        BLOB = 4,
 
     }
 
@@ -38,5 +39,6 @@
         RTRIM,
         NOCASE
     }
+
 
 }

@@ -2,7 +2,7 @@
   "profiles": {
     "Salesforces": {
       "commandName": "Project",
-      "commandLineArgs": "generate \"C:\\Users\\g.beard\\Downloads\\AvisageNewGen\" \"avisageNg\" \"C:\\Users\\g.beard\\Desktop\\Tests_datadeep\\datadeep\" --name \"avisageNg\" --label \"Avisage Ng\" --description \"sending mail processor\" --version \"1.0.0\" --summary"
+      "commandLineArgs": "generate \"D:\\Tests_datadeep\\gits\\AvisageNewGen\" \"avisageNg\" \"D:\\Tests_datadeep\\datadeep\" --name \"avisageNg\" --label \"Avisage Ng\" --description \"sending mail processor\" --version \"1.0.0\" --summary"
     }
   }
 }

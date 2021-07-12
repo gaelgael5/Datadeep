@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Bb.DataDeep.Models.Manifests;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,13 +15,14 @@ namespace Bb.DataDeep.Models.Mpd
             Libraries = new List<Library>();
         }
 
-        public List<Library> Libraries { get; set; }
-
         public DateTime LastUpdateDate { get; set; }
 
         public string Id { get; set; }
 
         public string Application { get; set; }
+
+        public List<Library> Libraries { get; set; }
+
 
         public Library AddLib(Library library)
         {
@@ -68,8 +70,8 @@ namespace Bb.DataDeep.Models.Mpd
 
         private string Getfilename(string _outPath)
         {
-            var dir = !string.IsNullOrEmpty(_outPath) 
-                ? Path.Combine(_outPath, this.Name) 
+            var dir = !string.IsNullOrEmpty(_outPath)
+                ? Path.Combine(_outPath, this.Name)
                 : this.Name;
 
             string filename = this.Name + "." + this.Version.ToString() + ".dd.json";
@@ -77,6 +79,19 @@ namespace Bb.DataDeep.Models.Mpd
 
             return file;
 
+        }
+
+        public static Package Load(ManifestModelItem manifest, ManifestModel parent)
+        {
+
+            if (manifest.Kind == DocumentKindEnum.Mpd)
+            {
+                var o = Path.Combine(parent.Path, "Mpd", manifest.Path);
+                var package = Package.Load(o);
+                return package;
+            }
+
+            return null;
         }
 
         public static Package Load(string file)

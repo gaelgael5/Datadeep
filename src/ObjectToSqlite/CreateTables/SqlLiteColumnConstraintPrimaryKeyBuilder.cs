@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace ObjectToSqlite
+namespace Bb.ToSqlite.CreateTables
 {
     /// <summary>
     /// PRIMARY KEY (ASC|DESC) conflict-clause AUTOINCREMENT

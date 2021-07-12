@@ -4,41 +4,42 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 
-namespace ObjectToSqlite
+namespace Bb.ToSqlite.CreateTables
 {
 
-    public class SqliteIndexBuilder : Builder
+
+    public class SqliteCreateTableBuilder : Builder
     {
 
-        public SqliteIndexBuilder(string schema,string tableName, string indexName, bool isUnique)
+        public SqliteCreateTableBuilder(string schema, string tableName, bool isTemporary)
         {
-
             this.Schema = schema;
-            this.Name = indexName;
-            this.TableName = tableName;
-            this.Unique = isUnique;
-
-            Columns = new List<SqlLiteColumnIndexBuilder>();
-
+            this.Name = tableName;
+            this.IsTemporary = isTemporary;
+            Columns = new List<SqlLiteColumnBuilder>();
         }
 
         public string Schema { get; }
 
         public string Name { get; }
 
-        public string TableName { get; }
+        public bool IsTemporary { get; }
 
-        public bool Unique { get; }
-
-        public SqliteIndexBuilder IfNotExist()
+        public SqliteCreateTableBuilder IfNotExist()
         {
             this._ifNotExist = true;
             return this;
         }
 
-        public List<SqlLiteColumnIndexBuilder> Columns { get; }
+        public SqliteCreateTableBuilder WithoutRowId()
+        {
+            this._withoutRowId = true;
+            return this;
+        }
 
-        public SqliteIndexBuilder Column<T>(params Action<SqliteColumnPropertyBuilder<T>>[] rules)
+        public List<SqlLiteColumnBuilder> Columns { get; }
+
+        public SqliteCreateTableBuilder Column<T>(params Action<SqliteColumnPropertyBuilder<T>>[] rules)
         {
             var builder = new SqliteColumnPropertyBuilder<T>(this);
 
@@ -49,12 +50,13 @@ namespace ObjectToSqlite
             return this;
         }
 
-        public SqliteIndexBuilder Column(string name, params Action<SqlLiteColumnIndexBuilder>[] rules)
+        public SqliteCreateTableBuilder Column(string name, SqliteColumnType type, params Action<SqlLiteColumnBuilder>[] rules)
         {
 
-            var col = new SqlLiteColumnIndexBuilder(name)
+            var col = new SqlLiteColumnBuilder()
             {
-                
+                Name = name,
+                Type = type
             };
 
             if (rules != null)
@@ -73,11 +75,11 @@ namespace ObjectToSqlite
             sb.AppendLine(string.Empty);
 
             sb.Append("CREATE ");
-            
-            if (this.Unique)
-                sb.Append("UNIQUE ");
 
-            sb.Append("INDEX ");
+            if (this.IsTemporary)
+                sb.Append("TEMPORARY ");
+
+            sb.Append("TABLE ");
 
             if (this._ifNotExist)
                 sb.Append("IF NOT EXISTS ");
@@ -86,14 +88,15 @@ namespace ObjectToSqlite
                 sb.Append($"`{Schema}`.");
             sb.Append($"`{Name}` ");
 
+
             #region columns
 
-            sb.Append($"ON `{TableName}` ( ");
+            sb.AppendLine("( ");
 
             string comma = string.Empty;
             foreach (var column in this.Columns)
             {
-                
+
                 if (!string.IsNullOrEmpty(comma))
                     sb.AppendLine(comma);
 
@@ -107,19 +110,23 @@ namespace ObjectToSqlite
 
             #endregion columns
 
+            if (this._withoutRowId)
+                sb.Append("WITHOUT ROWID ");
+
         }
 
         private bool _ifNotExist;
+        private bool _withoutRowId;
 
         public class SqliteColumnPropertyBuilder<T>
         {
 
-            public SqliteColumnPropertyBuilder(SqliteIndexBuilder sqliteTableBuilder)
+            public SqliteColumnPropertyBuilder(SqliteCreateTableBuilder sqliteTableBuilder)
             {
                 this.sqliteTableBuilder = sqliteTableBuilder;
             }
 
-            public SqliteColumnPropertyBuilder<T> Column(Expression<Func<T, object>> e, params Action<SqlLiteColumnIndexBuilder>[] rules)
+            public SqliteColumnPropertyBuilder<T> Column(Expression<Func<T, object>> e, params Action<SqlLiteColumnBuilder>[] rules)
             {
 
                 var member = MemberResolverVisitor.Resolve(e);
@@ -133,34 +140,13 @@ namespace ObjectToSqlite
 
                 }
 
-                this.sqliteTableBuilder.Column(member.Name, rules);
+                this.sqliteTableBuilder.Column(member.Name, type, rules);
 
                 return this;
 
             }
 
-            private class MemberResolverVisitor : ExpressionVisitor
-            {
-
-                public static MemberInfo Resolve(Expression e)
-                {
-
-                    var visitor = new MemberResolverVisitor();
-                    visitor.Visit(e);
-                    return visitor._member;
-                }
-
-                protected override Expression VisitMember(MemberExpression node)
-                {
-                    this._member = node.Member;
-                    return base.VisitMember(node);
-                }
-
-                private MemberInfo _member;
-
-            }
-
-            private SqliteIndexBuilder sqliteTableBuilder;
+            private SqliteCreateTableBuilder sqliteTableBuilder;
 
         }
 

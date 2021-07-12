@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace ObjectToSqlite
+namespace Bb.ToSqlite.CreateTables
 {
     public class SqlLiteColumnConstraintCollateBuilder : SqlLiteColumnConstraintBaseBuilder
     {

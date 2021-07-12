@@ -2,10 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <RootNamespace>Bb.ToSqlite</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
     <Compile Remove="Class1.cs" />
+    <Compile Remove="CreateTables\SqliteForeignTableConstraintBuilder.cs" />
   </ItemGroup>
 
   <ItemGroup>

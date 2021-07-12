@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace ObjectToSqlite
+namespace Bb.ToSqlite.CreateTables
 {
     public class SqlLiteColumnBuilder : Builder
     {
@@ -40,7 +40,7 @@ namespace ObjectToSqlite
             return this;
         }
 
-        public SqlLiteColumnBuilder scale(int scale, int precision)
+        public SqlLiteColumnBuilder Scale(int scale, int precision)
         {
             if (Type != SqliteColumnType.real)
                 throw new Exception("method is strictly reserved for real type");
@@ -167,7 +167,6 @@ namespace ObjectToSqlite
 
         }
 
-
         public SqlLiteColumnConstraintCollateBuilder Collate(CollationEnum collationName)
         {
 
@@ -269,6 +268,7 @@ namespace ObjectToSqlite
         private List<SqlLiteColumnConstraintBaseBuilder> _constraints;
         private int? _int1;
         private int? _int2;
+
     }
 
     // foreign-key-clause

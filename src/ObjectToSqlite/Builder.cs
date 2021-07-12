@@ -1,7 +1,8 @@
 ﻿using System.Text;
 
-namespace ObjectToSqlite
+namespace Bb.ToSqlite
 {
+
     public abstract class Builder
     {
 

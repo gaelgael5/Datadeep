@@ -1,7 +1,9 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Text.Json.Serialization;
 
 namespace Bb.DataDeep.Models.Mpd
 {
@@ -15,7 +17,7 @@ namespace Bb.DataDeep.Models.Mpd
             this.Description = string.Empty;
         }
 
-
+        [JsonProperty(Order = 1)]
         public string Label { get; set; }
 
         public Version Version { get; set; }

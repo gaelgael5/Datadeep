@@ -22,7 +22,7 @@ namespace Bb.DataDeep.Models.Manifests
         public DateTime LastUpdateDate { get; set; }
 
         public List<ManifestModelItem> Items { get; set; }
-        
+
         public void Save(string _outPath)
         {
 
@@ -104,6 +104,19 @@ namespace Bb.DataDeep.Models.Manifests
             }
 
             return null;
+
+        }
+
+        public FileInfo ToSqlite()
+        {
+
+            string filePath = System.IO.Path.Combine(this.Path, "summary.db");
+            var file = new FileInfo(filePath);
+
+            var generator = new GenerateDb(file);
+            generator.Generate(this);
+
+            return file;
 
         }
 

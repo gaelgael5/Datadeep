@@ -3,11 +3,14 @@ using System.Diagnostics;
 
 namespace Bb.DataDeep.Models.Manifests
 {
+
     [DebuggerDisplay("{Name}")]
     public class ManifestModelItem
     {
 
+
         public string Id { get; set; }
+
         public string Name { get; set; }
 
 
@@ -20,7 +23,6 @@ namespace Bb.DataDeep.Models.Manifests
         public string Path { get; set; }
 
         public DocumentKindEnum Kind { get; set; }
-
 
 
     }

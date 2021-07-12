@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -17,8 +18,10 @@ namespace Bb.DataDeep.Models
             this.Description = string.Empty;
         }
 
+        [JsonProperty(Order = 0)] 
         public string Name { get; set; }
 
+        [JsonProperty(Order = 2)]
         public string Description { get; set; }
 
 

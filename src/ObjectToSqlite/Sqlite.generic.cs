@@ -1,12 +1,87 @@
-﻿using Microsoft.Data.Sqlite;
+﻿using Bb.ToSqlite.CreateTables;
+using Bb.ToSqlite.Inserts;
+using Microsoft.Data.Sqlite;
 using System;
+using System.Collections.Generic;
 using System.Text;
 
-namespace ObjectToSqlite
+namespace Bb.ToSqlite
 {
 
-    public static class Sqlite
+    public static partial class Sqlite
     {
+
+        public class Batch
+        {
+            private SqliteCommand cmd;
+
+            public Batch(SqliteCommand cmd)
+            {
+                this.cmd = cmd;
+            }
+
+            public void Insert()
+            {
+                cmd.ExecuteNonQuery();
+            }
+
+        }
+
+        public static void Execute(this SqliteTableInsertBuilder self, SqliteConnection cnx, Action<Batch> action)
+        {
+
+            switch (cnx.State)
+            {
+
+                case System.Data.ConnectionState.Broken:
+                    cnx.Open();
+                    break;
+
+                case System.Data.ConnectionState.Closed:
+                    cnx.Open();
+                    break;
+
+                case System.Data.ConnectionState.Connecting:
+                    break;
+
+                case System.Data.ConnectionState.Executing:
+                    break;
+
+                case System.Data.ConnectionState.Fetching:
+                    break;
+
+
+                case System.Data.ConnectionState.Open:
+                default:
+                    break;
+
+            }
+
+            using (var transaction = cnx.BeginTransaction())
+            using (var cmd = self.GetCommand(cnx))
+            {
+                var btc = new Batch(cmd);
+                action(btc);
+                transaction.Commit();
+
+            }
+
+        }
+
+        public static SqliteParameter ToParameter(this string self, SqliteType type, System.Data.ParameterDirection way = System.Data.ParameterDirection.Input)
+        {
+
+            string name = self;
+            if (!name.StartsWith("$"))
+                name = "$" + name;
+
+            return new SqliteParameter()
+            {
+                ParameterName = name,
+                SqliteType = type,
+                Direction = way,
+            };
+        }
 
 
         public static SqliteConnection AsConnection(this SqliteConnectionStringBuilder self)
@@ -14,7 +89,7 @@ namespace ObjectToSqlite
             return new SqliteConnection(self.ConnectionString);
         }
 
-        public static SqliteConnection  AsSqliteConnection(this string self)
+        public static SqliteConnection AsSqliteConnection(this string self)
         {
             return new SqliteConnection(self);
         }
@@ -31,17 +106,6 @@ namespace ObjectToSqlite
 
         }
 
-        public static SqliteTableBuilder CreateTable(string name, string schema = null, bool isTemporary = false)
-        {
-            return new SqliteTableBuilder(schema, name, isTemporary);
-        }
-
-        public static SqliteIndexBuilder CreateIndex(string targetTableName, string name, string schema = null, bool isUnique = false)
-        {
-            return new SqliteIndexBuilder(schema, targetTableName, name, isUnique);
-        }
-
-
         public static int Execute(this Builder self, SqliteConnection cnx)
         {
 
@@ -55,7 +119,7 @@ namespace ObjectToSqlite
                 case System.Data.ConnectionState.Closed:
                     cnx.Open();
                     break;
-             
+
 
                 case System.Data.ConnectionState.Connecting:
                     break;
@@ -65,8 +129,8 @@ namespace ObjectToSqlite
 
                 case System.Data.ConnectionState.Fetching:
                     break;
-                    
-                    
+
+
                 case System.Data.ConnectionState.Open:
                 default:
                     break;
@@ -97,7 +161,7 @@ namespace ObjectToSqlite
             if (_self == typeof(byte))
                 return SqliteColumnType.INTEGER;
 
-            if (_self == typeof(bool[]))
+            if (_self == typeof(byte[]))
                 return SqliteColumnType.BLOB;
 
             if (_self == typeof(char))
@@ -145,6 +209,48 @@ namespace ObjectToSqlite
             return SqliteColumnType.Undefined;
 
         }
+
+        public static void AppendList<T>(this IEnumerable<T> self, string separator, StringBuilder sb, Action<T, StringBuilder> action)
+        {
+
+            string s = string.Empty;
+
+            foreach (var item in self)
+            {
+                sb.Append(s);
+                action(item, sb);
+                s = separator;
+            }
+
+        }
+
+        public static List<string> AsQuoted(this IEnumerable<string> self)
+        {
+            List<string> result = new List<string>();
+
+            foreach (var name in self)
+            {
+
+                if (name.StartsWith("`") && name.EndsWith("`"))
+                    result.Add(name);
+                else
+                    result.Add($"`{name}`");
+
+            }
+
+            return result;
+        }
+
+        public static string AsQuoted(this string self)
+        {
+
+            if (self.StartsWith("`") && self.EndsWith("`"))
+                return self;
+
+            return $"`{self}`";
+
+        }
+
 
     }
 

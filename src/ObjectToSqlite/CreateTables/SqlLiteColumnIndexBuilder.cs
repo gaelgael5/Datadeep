@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace ObjectToSqlite
+namespace Bb.ToSqlite.CreateTables
 {
 
     public class SqlLiteColumnIndexBuilder : Builder
