@@ -54,7 +54,7 @@ namespace Salesforce.Commands
                 var argName = validator.Option("--name", "Name of the package");
                 var argLabel = validator.Option("--label", "label of the package");
                 var argDescription = validator.Option("--description", "description of the package");
-                var argVersion = validator.Option("--version", "Version of the package");
+                //var argVersion = validator.Option("--version", "Version of the package");
                 var argSummary = validator.OptionNoValue("--summary", "generate or regenerate summary");
 
 
@@ -83,9 +83,8 @@ namespace Salesforce.Commands
                     if (argDescription.HasValue())
                         package.Description = argDescription.Value();
 
-                    if (argVersion.HasValue())
-                        package.FromVersion = new Version(argVersion.Value());
-
+                    //if (argVersion.HasValue())
+                    //    package.FromVersion = new Version(argVersion.Value());
 
                     SalesforceMpdBuilder builder = new SalesforceMpdBuilder();
                     var libs = builder.Parse(sourceDir.FullName).ToArray();
@@ -93,9 +92,12 @@ namespace Salesforce.Commands
                         package.AddLib(lib);
 
                     if (libs[0]?.FromVersion != null)
+                    {
                         package.FromVersion = new Version(libs[0]?.FromVersion.ToString());
-
-                    package.Id = Crc32.Calculate( string.Concat( package.Name, package.FromVersion)).ToString();
+                        package.Id = Crc32.Calculate(string.Concat(package.Name, package.FromVersion)).ToString();
+                    }
+                    else
+                        package.Id = Crc32.Calculate(package.Name).ToString();
 
                     package.Save(targetDir.FullName);
 
