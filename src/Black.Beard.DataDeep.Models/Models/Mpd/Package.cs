@@ -39,7 +39,7 @@ namespace Bb.DataDeep.Models.Mpd
                 Kind = Manifests.DocumentKindEnum.Mpd,
                 Name = this.Name,
                 LastUpdateDate = this.LastUpdateDate,
-                Version = this.Version.ToString(),
+                Version = this.FromVersion?.ToString(),
                 Path = Getfilename(string.Empty),
                 Application = this.Application,
                 Id = this.Id,
@@ -74,7 +74,11 @@ namespace Bb.DataDeep.Models.Mpd
                 ? Path.Combine(_outPath, this.Name)
                 : this.Name;
 
-            string filename = this.Name + "." + this.Version.ToString() + ".dd.json";
+            string filename = this.Name;
+            if(this.FromVersion != null)
+                filename += "." + this.FromVersion.ToString();
+
+            filename += ".dd.json";
             var file = Path.Combine(dir, filename);
 
             return file;

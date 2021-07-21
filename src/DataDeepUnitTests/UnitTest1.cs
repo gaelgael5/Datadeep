@@ -11,13 +11,8 @@ namespace DataDeepUnitTests
         [TestMethod]
         public void TestMethod1()
         {
-
-
             var summary = ManifestModel.Load(@"D:\Tests_datadeep\datadeep");
-
             var file = summary.ToSqlite();
-
-
         }
 
         //[TestMethod]

@@ -84,9 +84,7 @@ namespace Salesforce.Commands
                         package.Description = argDescription.Value();
 
                     if (argVersion.HasValue())
-                        package.Version = new Version(argVersion.Value());
-
-                    package.Id = Crc32.Calculate(package.Name + package.Version).ToString();
+                        package.FromVersion = new Version(argVersion.Value());
 
 
                     SalesforceMpdBuilder builder = new SalesforceMpdBuilder();
@@ -94,9 +92,14 @@ namespace Salesforce.Commands
                     foreach (var lib in libs)
                         package.AddLib(lib);
 
+                    if (libs[0]?.FromVersion != null)
+                        package.FromVersion = new Version(libs[0]?.FromVersion.ToString());
+
+                    package.Id = Crc32.Calculate( string.Concat( package.Name, package.FromVersion)).ToString();
+
                     package.Save(targetDir.FullName);
 
-                    if (argVersion.HasValue())
+                    if (argSummary.HasValue())
                     {
                         var i = Bb.DataDeep.Models.Manifests.ManifestModel.Create(targetDir.FullName);
                         i.Save(targetDir.FullName);

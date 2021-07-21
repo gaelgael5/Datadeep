@@ -34,7 +34,7 @@ namespace Bb.DataDeep.Models.Manifests
             if (File.Exists(file.FullName))
                 File.Delete(file.FullName);
 
-            var result = JsonConvert.SerializeObject(this, Formatting.Indented);
+            var result = JsonConvert.SerializeObject(this, Formatting.Indented, new Newtonsoft.Json.Converters.StringEnumConverter());
 
             file.FullName.Save(result);
 

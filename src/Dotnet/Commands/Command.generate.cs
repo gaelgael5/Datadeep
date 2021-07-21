@@ -83,9 +83,9 @@ namespace DotnetParser.Commands
                         package.Description = argDescription.Value();
 
                     if (argVersion.HasValue())
-                        package.Version = new Version(argVersion.Value());
+                        package.FromVersion = new Version(argVersion.Value());
 
-                    package.Id = Crc32.Calculate(package.Name + package.Version).ToString();
+                    package.Id = Crc32.Calculate(package.Name + package.FromVersion).ToString();
 
 
                     DotnetMpdBuilder builder = new DotnetMpdBuilder();
@@ -95,7 +95,7 @@ namespace DotnetParser.Commands
 
                     package.Save(targetDir.FullName);
 
-                    if (argVersion.HasValue())
+                    if (argSummary.HasValue())
                     {
                         var i = Bb.DataDeep.Models.Manifests.ManifestModel.Create(targetDir.FullName);
                         i.Save(targetDir.FullName);

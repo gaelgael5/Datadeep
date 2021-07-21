@@ -20,8 +20,9 @@ namespace Bb.DataDeep.Models.Mpd
         [JsonProperty(Order = 1)]
         public string Label { get; set; }
 
-        public Version Version { get; set; }
+        public Version FromVersion { get; set; }
 
+        public Version ToVersion { get; set; }
 
     }
 
